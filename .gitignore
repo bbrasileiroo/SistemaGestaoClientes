@@ -1,0 +1,21 @@
+# Banco de dados
+*.db
+*.sqlite
+*.sqlite3
+
+# Arquivos de exportação
+*.xlsx
+*.csv
+
+# Ambientes Virtuais
+venv/
+.venv/
+env/
+.env/
+
+# Cache do Python
+__pycache__/
+*.pyc
+
+# Arquivos de configuração do VSCode
+.vscode/
