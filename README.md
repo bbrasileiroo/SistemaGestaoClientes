@@ -20,8 +20,8 @@ Este é um projeto simples em Python para fins de estudo, que cria uma interface
 
 1.  Clone este repositório:
     ```bash
-    git clone [https://github.com/bbrasileiroo/Cadastro-de-Clientes---BD.git](https://github.com/bbrasileiroo/Cadastro-de-Clientes---BD.git)
-    cd Cadastro-de-Clientes---BD
+    git clone [https://github.com/bbrasileiroo/SistemaGestaoClientes](https://github.com/bbrasileiroo/SistemaGestaoClientes)
+    cd SistemaGestaoClientes
     ```
 
 2.  (Recomendado) Crie um ambiente virtual:
