@@ -3,11 +3,10 @@ from tkinter import messagebox  # Usado para mostrar pop-ups de sucesso
 import sqlite3
 import pandas as pd
 import os # Usado para encontrar o caminho do script
-# --- NOVO: Imports para o Gráfico ---
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-# plt é o "desenhista"
-# FigureCanvasTkAgg é a "ponte" que conecta o Matplotlib com o Tkinter
+import matplotlib.pyplot as plt # plt é o "desenhista"
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg # a "ponte" que conecta o Matplotlib com o Tkinter
+# --- NOVO IMPORT ---
+from matplotlib.ticker import MaxNLocator
 
 class AppCadastro:
     def __init__(self, root):
@@ -22,7 +21,7 @@ class AppCadastro:
         # Garante que a tabela exista
         self.criar_tabela_se_nao_existir()
 
-        # --- NOVO: Divisão da Janela em "Frames" ---
+        # --- Divisão da Janela em "Frames" ---
         self.frame_esq = tk.Frame(root)
         self.frame_esq.pack(side=tk.LEFT, padx=10, pady=10, fill=tk.Y)
         # side=tk.LEFT "gruda" este frame na esquerda.
@@ -31,7 +30,7 @@ class AppCadastro:
         self.frame_dir.pack(side=tk.RIGHT, padx=10, pady=10, fill=tk.BOTH, expand=True)
         # fill=tk.BOTH e expand=True fazem o gráfico ocupar o espaço disponível.
 
-        # --- NOVO: Uma variável para "lembrar" do widget do gráfico ---
+        # --- Uma variável para "lembrar" do widget do gráfico ---
         self.canvas_widget = None
 
         # --- Widgets da Interface (Agora dentro do self.frame_esq) ---
@@ -67,7 +66,7 @@ class AppCadastro:
         self.botao_exportar = tk.Button(self.frame_esq, text='Exportar Base (Excel)', command=self.exportar_clientes)
         self.botao_exportar.grid(row=6, column=0, padx=10, pady=10, columnspan=2, ipadx=80)
 
-        # --- NOVO: Botão de Relatório ---
+        # --- Botão de Relatório ---
         self.botao_relatorio = tk.Button(self.frame_esq, text='Atualizar Relatório', command=self.mostrar_relatorio)
         # Este botão chama a nova função de gráfico
         self.botao_relatorio.grid(row=7, column=0, padx=10, pady=10, columnspan=2, ipadx=80)
@@ -92,7 +91,7 @@ class AppCadastro:
             conn.execute(comando)
             # 'with' faz o commit automático
 
-    # --- NOVO: Função "Wrapper" ---
+    # --- Função "Wrapper" ---
     def cadastrar_cliente_e_atualizar(self):
         # Esta função existe para fazer duas coisas com um só clique:
         # 1. Cadastrar o cliente
@@ -159,7 +158,7 @@ class AppCadastro:
         except Exception as e:
             messagebox.showerror("Erro", f"Ocorreu um erro ao exportar: {e}")
 
-    # --- NOVO: Função inteira para o Dashboard ---
+    # --- Função inteira para o Dashboard ---
     def mostrar_relatorio(self):
         """Puxa os dados e exibe um gráfico de barras no frame_dir."""
 
@@ -195,6 +194,16 @@ class AppCadastro:
             ax.set_title('Contagem de Clientes por Idade')
             ax.set_ylabel('Nº de Clientes')
             ax.set_xlabel('Idade')
+
+            # --- NOVO: Correção dos Eixos ---
+            
+            # 1. Força o eixo Y (Nº de Clientes) a usar apenas números inteiros
+            ax.yaxis.set_major_locator(MaxNLocator(integer=True))
+
+            # 2. Força o eixo X (Idade) a usar apenas as idades do nosso dataFrame
+            # Isso remove os decimais estranhos no eixo X
+            ax.set_xticks(analise_idade['idade'])
+            
             plt.tight_layout() # Ajusta para caber tudo
 
             # 5. A "Ponte" (Carregar no Tkinter)
