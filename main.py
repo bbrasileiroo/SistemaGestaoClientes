@@ -71,6 +71,10 @@ class AppCadastro:
         # Este botão chama a nova função de gráfico
         self.botao_relatorio.grid(row=7, column=0, padx=10, pady=10, columnspan=2, ipadx=80)
 
+        # --- NOVO: Botão para remoção dos dados ---
+        self.botao_deletar = tk.Button(self.frame_esq, text='Deletar registros', command=self.deletar_dados)
+        self.botao_deletar.grid(row=8, column=0, padx=10, pady=10, columnspan=2, ipadx=80)
+
     def conectar_db(self):
         """Retorna uma conexão."""
         conexao = sqlite3.connect(self.db_path)
@@ -140,6 +144,24 @@ class AppCadastro:
         self.entry_idade.delete(0, "end")
         self.entry_email.delete(0, "end")
         self.entry_telefone.delete(0, "end")
+
+    # --- NOVO: Função que limpa todos os dados da tabela, mas o banco permanece. ---
+    def deletar_dados(self):
+        resposta = messagebox.askyesno("Confirmação", "Tem certeza que deseja deletar TODOS os registros?")
+        if not resposta:
+            return
+        comando = '''
+        DELETE FROM clientes'''
+
+        try:
+            with self.conectar_db() as conn:
+                conn.execute(comando)
+
+                messagebox.showinfo("Sucesso", "Todos os registros deletados com sucesso!")
+                self.mostrar_relatorio()
+
+        except sqlite3.Error as e:
+            messagebox.showerror("Erro", f"Ocorreu um erro ao realizar esta ação: {e}")
 
     def exportar_clientes(self):
         """Exporta os dados do banco para um arquivo Excel."""
